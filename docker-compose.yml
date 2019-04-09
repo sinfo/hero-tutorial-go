@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+    api:
+        container_name: 'go-tutorial-api'
+        build: './src'
+        ports:
+            - '8000:8000'
+        volumes:
+            - './src:/go/src/app'
+        depends_on:
+            - 'mongo'
+    mongo:
+        image: 'mongo:latest'
+        container_name: 'mongo'
+        ports:
+            - '27017:27017'
