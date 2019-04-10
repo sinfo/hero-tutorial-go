@@ -16,3 +16,4 @@ See https://github.com/gravityblast/fresh
 
 - [gorilla/mux](https://github.com/gorilla/mux)
 - [dep](https://github.com/golang/dep)
+- [mgo](https://godoc.org/github.com/globalsign/mgo)
