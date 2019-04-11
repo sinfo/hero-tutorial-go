@@ -5,7 +5,7 @@
 $ go build -o main *.go
 
 # test
-$ go test
+$ go test ./...
 
 #run
 $ ./main

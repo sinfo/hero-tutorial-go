@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sinfo/go-tutorial/server"
 	"github.com/spf13/viper"
 )
 
@@ -21,8 +22,8 @@ func main() {
 	dbURL := viper.GetString("DB_URL")
 	dbName := viper.GetString("DB_NAME")
 
-	server := newServer(dbURL, dbName)
+	server.InitServer(dbURL, dbName)
 
 	log.Printf("Running on port %v", viper.Get("port"))
-	log.Fatal(http.ListenAndServe(":8000", server))
+	log.Fatal(http.ListenAndServe(":8000", server.ServerInstance))
 }
