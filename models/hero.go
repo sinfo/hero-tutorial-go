@@ -13,8 +13,8 @@ type Hero struct {
 
 var heroCollection *mgo.Collection
 
-func InitHeroCollection() {
-	heroCollection = DB.C("heroes")
+func InitHeroCollection(db *mgo.Database) {
+	heroCollection = db.C("heroes")
 
 	index := mgo.Index{
 		Key:        []string{"id"},
@@ -31,35 +31,29 @@ func InitHeroCollection() {
 
 func (hero *Hero) CreateHero() error {
 	hero._ID = bson.NewObjectId()
-	c := DB.C("heroes")
-	return c.Insert(hero)
+	return heroCollection.Insert(hero)
 }
 
 func GetHeroes() ([]Hero, error) {
 	heroes := []Hero{}
-	c := DB.C("heroes")
-	return heroes, c.Find(nil).All(&heroes)
+	return heroes, heroCollection.Find(nil).All(&heroes)
 }
 
 func GetHero(id int) (*Hero, error) {
 	hero := Hero{}
-	c := DB.C("heroes")
-	return &hero, c.Find(bson.M{"id": id}).One(&hero)
+	return &hero, heroCollection.Find(bson.M{"id": id}).One(&hero)
 }
 
 func ModifyHero(hero Hero) (*Hero, error) {
-	c := DB.C("heroes")
-
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"name": hero.Name}},
 		ReturnNew: true,
 	}
 
-	_, err := c.Find(bson.M{"id": hero.ID}).Apply(change, &hero)
+	_, err := heroCollection.Find(bson.M{"id": hero.ID}).Apply(change, &hero)
 	return &hero, err
 }
 
 func RemoveHero(id int) error {
-	c := DB.C("heroes")
-	return c.Remove(bson.M{"id": id})
+	return heroCollection.Remove(bson.M{"id": id})
 }

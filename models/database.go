@@ -6,10 +6,10 @@ import (
 	"github.com/globalsign/mgo"
 )
 
-var (
-	DB *mgo.Database
-)
-
+/*
+InitDB initializes a DB client instance for the server.
+MongoDB database must be accessible by the URL given.
+*/
 func InitDB(url string, name string) *mgo.Database {
 	var session *mgo.Session
 	var err error
@@ -18,8 +18,8 @@ func InitDB(url string, name string) *mgo.Database {
 		panic(fmt.Errorf("URL: %v, name: %v, err: %s", url, name, err))
 	}
 
-	DB = session.DB(name)
-	InitHeroCollection()
+	db := session.DB(name)
+	InitHeroCollection(db)
 
-	return DB
+	return db
 }

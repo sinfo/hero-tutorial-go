@@ -7,6 +7,9 @@ $ go build -o main *.go
 # test
 $ go test ./...
 
+# run linter
+$ golint ./...
+
 #run
 $ ./main
 ```
