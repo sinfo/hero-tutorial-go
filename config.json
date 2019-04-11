@@ -1,8 +1,8 @@
 {
     "host": "localhost",
     "port": 8000,
-    "database": {
-        "url": "mongodb://localhost:27017",
-        "name": "gotutorial"
-    } 
+    "DB_URL": "mongodb://localhost:27017",
+    "DB_NAME": "gotutorial",
+    "DB_TEST_URL": "mongodb://localhost:27017",
+    "DB_TEST_NAME": "gotutorialtest"
 }

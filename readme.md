@@ -1,16 +1,22 @@
-## build
+## go
+
 ```
-docker build -t go-tutorial .
+# build
+$ go build -o main *.go
+
+# test
+$ go test
+
+#run
+$ ./main
 ```
 
-## run
-```
-docker run -it -p 3000:3000 --name some-mongo -d mongo:3.4.20-xenial go-tutorial
-```
+## docker
 
-## development
-
-See https://github.com/gravityblast/fresh
+```
+# build and run
+$ docker-compose up --build
+```
 
 ## dependencies
 

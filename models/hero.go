@@ -11,6 +11,24 @@ type Hero struct {
 	Name string        `json:"name" bson:"name"`
 }
 
+var heroCollection *mgo.Collection
+
+func InitHeroCollection() {
+	heroCollection = DB.C("heroes")
+
+	index := mgo.Index{
+		Key:        []string{"id"},
+		Unique:     true,
+		DropDups:   true,
+		Background: true,
+		Sparse:     true,
+	}
+
+	if err := heroCollection.EnsureIndex(index); err != nil {
+		panic(err)
+	}
+}
+
 func (hero *Hero) CreateHero() error {
 	hero._ID = bson.NewObjectId()
 	c := DB.C("heroes")
