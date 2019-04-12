@@ -36,6 +36,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestAddHero(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
 	hero := &models.Hero{ID: 1, Name: "my_test_name"}
 	b, errMarshal := json.Marshal(hero)
 
@@ -45,10 +47,32 @@ func TestAddHero(t *testing.T) {
 	assert.NilError(t, err)
 	assert.Equal(t, res.Code, http.StatusOK)
 
-	server.ServerInstance.DB.C("heroes").DropCollection()
+}
+
+func TestAddHeroDuplicate(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	hero := &models.Hero{ID: 1, Name: "my_test_name"}
+	duplicated := &models.Hero{ID: 1, Name: "my_other_test_name"}
+	heroB, errMarshal1 := json.Marshal(hero)
+	duplicatedB, errMarshal2 := json.Marshal(duplicated)
+
+	assert.NilError(t, errMarshal1)
+	assert.NilError(t, errMarshal2)
+
+	res1, err1 := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
+	res2, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(duplicatedB))
+
+	assert.NilError(t, err1)
+	assert.Equal(t, res1.Code, http.StatusOK)
+
+	assert.Equal(t, res2.Code, http.StatusConflict)
+
 }
 
 func TestGetsHeroes(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
 	var heroes []models.Hero
 	hero1 := &models.Hero{ID: 1, Name: "some hero"}
 	hero2 := &models.Hero{ID: 2, Name: "some other hero"}
@@ -68,9 +92,10 @@ func TestGetsHeroes(t *testing.T) {
 	assert.Equal(t, hero1.IsIn(heroes), true)
 	assert.Equal(t, hero2.IsIn(heroes), true)
 
-	server.ServerInstance.DB.C("heroes").DropCollection()
 }
 func TestGetHero(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
 	createdHero := &models.Hero{ID: 1, Name: "some hero"}
 	var queriedHero models.Hero
 
@@ -84,11 +109,11 @@ func TestGetHero(t *testing.T) {
 	json.NewDecoder(res.Body).Decode(&queriedHero)
 
 	assert.Equal(t, createdHero.Equals(queriedHero), true)
-
-	server.ServerInstance.DB.C("heroes").DropCollection()
 }
 
 func TestDeleteHero(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
 	var heroes []models.Hero
 	hero1 := &models.Hero{ID: 1, Name: "some hero"}
 	hero2 := &models.Hero{ID: 2, Name: "some other hero"}
@@ -110,10 +135,11 @@ func TestDeleteHero(t *testing.T) {
 	assert.Equal(t, hero1.IsIn(heroes), false)
 	assert.Equal(t, hero2.IsIn(heroes), true)
 
-	server.ServerInstance.DB.C("heroes").DropCollection()
 }
 
 func TestModifyHero(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
 	hero := &models.Hero{ID: 1, Name: "my_test_name"}
 	var queriedHero models.Hero
 
@@ -132,5 +158,4 @@ func TestModifyHero(t *testing.T) {
 	assert.Equal(t, res.Code, http.StatusOK)
 	assert.Equal(t, hero.Equals(queriedHero), true)
 
-	server.ServerInstance.DB.C("heroes").DropCollection()
 }

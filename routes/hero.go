@@ -31,7 +31,7 @@ func AddHero(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if err := hero.CreateHero(); err != nil {
-		http.Error(w, "Could not create hero", http.StatusExpectationFailed)
+		http.Error(w, "Could not create hero", http.StatusConflict)
 		return
 	}
 
