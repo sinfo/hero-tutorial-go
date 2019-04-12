@@ -34,6 +34,20 @@ func (hero *Hero) CreateHero() error {
 	return heroCollection.Insert(hero)
 }
 
+func (hero *Hero) IsIn(heroes []Hero) bool {
+	for _, s := range heroes {
+		if s.ID == hero.ID && s.Name == hero.Name {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (hero *Hero) Equals(other Hero) bool {
+	return hero.ID == other.ID && hero.Name == other.Name
+}
+
 func GetHeroes() ([]Hero, error) {
 	heroes := []Hero{}
 	return heroes, heroCollection.Find(nil).All(&heroes)
