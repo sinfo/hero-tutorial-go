@@ -17,8 +17,7 @@ type Hero struct {
 
 var heroCollection *mgo.Collection
 
-// InitHeroCollection grabs the hero collection from the database
-func InitHeroCollection(db *mgo.Database) {
+func initHeroCollection(db *mgo.Database) {
 	heroCollection = db.C("heroes")
 }
 

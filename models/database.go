@@ -19,7 +19,7 @@ func InitDB(url string, name string) *mgo.Database {
 	}
 
 	db := session.DB(name)
-	InitHeroCollection(db)
+	initHeroCollection(db)
 
 	return db
 }
