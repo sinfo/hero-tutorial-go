@@ -23,7 +23,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // InitServer initializes the server and its database
-
 func InitServer(dbURL string, dbName string) {
 	db := models.InitDB(dbURL, dbName)
 	mux := mux.NewRouter()
