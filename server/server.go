@@ -9,16 +9,20 @@ import (
 	"github.com/sinfo/go-tutorial/routes"
 )
 
+// Server representes the server, and stores its router and database instance
 type Server struct {
 	Mux *mux.Router
 	DB  *mgo.Database
 }
 
+// ServerInstance represents the instance of the running server
 var ServerInstance *Server
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.Mux.ServeHTTP(w, r)
 }
+
+// InitServer initializes the server and its database
 
 func InitServer(dbURL string, dbName string) {
 	db := models.InitDB(dbURL, dbName)

@@ -34,14 +34,21 @@ $ golint ./...
 $ ./main
 ```
 
-## docker
+### development
+
+#### lint ([revive](https://github.com/mgechev/revive))
+```
+$ revive -exclude vendor/... -formatter friendly ./...
+```
+
+### docker
 
 ```
 # build and run
 $ docker-compose up --build
 ```
 
-## dependencies
+### dependencies
 
 - [gorilla/mux](https://github.com/gorilla/mux)
 - [dep](https://github.com/golang/dep)

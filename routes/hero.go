@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetHeroes is the handler that gets all the heroes from the database
 func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	heroes, err := models.GetHeroes()
 
@@ -20,6 +21,7 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(heroes)
 }
 
+// AddHero is the handler that adds a hero to the database
 func AddHero(w http.ResponseWriter, r *http.Request) {
 	var hero *models.Hero
 	var err error
@@ -39,6 +41,7 @@ func AddHero(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(hero)
 }
 
+// GetHero is the handler that gets a specific hero from the database
 func GetHero(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
@@ -63,6 +66,7 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not Found", http.StatusNotFound)
 }
 
+// ModifyHero is the handler that renames a hero from the database
 func ModifyHero(w http.ResponseWriter, r *http.Request) {
 	var hero *models.Hero
 	var err error
@@ -87,6 +91,7 @@ func ModifyHero(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not Found", http.StatusNotFound)
 }
 
+// DeleteHero is the handler that removes a hero from the database
 func DeleteHero(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
