@@ -1,6 +1,10 @@
 package models
 
 import (
+	"encoding/json"
+	"errors"
+	"io"
+
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 )
@@ -14,6 +18,20 @@ var heroCollection *mgo.Collection
 
 func InitHeroCollection(db *mgo.Database) {
 	heroCollection = db.C("heroes")
+}
+
+func HeroFromBody(body io.Reader) (*Hero, error) {
+	var hero Hero
+
+	if err := json.NewDecoder(body).Decode(&hero); err != nil {
+		return nil, err
+	}
+
+	if len(hero.Name) == 0 {
+		return nil, errors.New("invalid name on hero")
+	}
+
+	return &hero, nil
 }
 
 func (hero *Hero) CreateHero() error {

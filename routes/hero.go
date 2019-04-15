@@ -21,16 +21,17 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddHero(w http.ResponseWriter, r *http.Request) {
-	var hero models.Hero
+	var hero *models.Hero
+	var err error
 
-	if err := json.NewDecoder(r.Body).Decode(&hero); err != nil {
+	if hero, err = models.HeroFromBody(r.Body); err != nil {
 		http.Error(w, "Invalid hero", http.StatusBadRequest)
 		return
 	}
 
 	defer r.Body.Close()
 
-	if err := hero.CreateHero(); err != nil {
+	if err = hero.CreateHero(); err != nil {
 		http.Error(w, "Could not create hero", http.StatusConflict)
 		return
 	}
@@ -63,14 +64,15 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 }
 
 func ModifyHero(w http.ResponseWriter, r *http.Request) {
-	var hero models.Hero
+	var hero *models.Hero
+	var err error
 
-	if err := json.NewDecoder(r.Body).Decode(&hero); err != nil {
+	if hero, err = models.HeroFromBody(r.Body); err != nil {
 		http.Error(w, "Invalid hero", http.StatusBadRequest)
 		return
 	}
 
-	newHero, err := models.ModifyHero(hero)
+	newHero, err := models.ModifyHero(*hero)
 
 	if err != nil {
 		http.Error(w, "Not Found", http.StatusNotFound)
@@ -95,7 +97,7 @@ func DeleteHero(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = models.RemoveHero(id); err != nil {
-		http.Error(w, "Failed to remove hero", http.StatusExpectationFailed)
+		http.Error(w, "Failed to remove hero", http.StatusNotFound)
 		return
 	}
 

@@ -67,7 +67,41 @@ func TestAddHeroDuplicate(t *testing.T) {
 	assert.Equal(t, res1.Code, http.StatusOK)
 
 	assert.Equal(t, res2.Code, http.StatusConflict)
+}
 
+func TestAddHeroInvalidType(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	type WrongHero struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	}
+
+	hero := &WrongHero{ID: "1", Name: "my_wrong_type_id"}
+	heroB, errMarshal := json.Marshal(hero)
+
+	assert.NilError(t, errMarshal)
+
+	res, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
+
+	assert.Equal(t, res.Code, http.StatusBadRequest)
+}
+func TestAddHeroInvalidFormat(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	type WrongHero struct {
+		ID       int    `json:"id"`
+		FakeName string `json:"fakeName"`
+	}
+
+	hero := &WrongHero{ID: 1, FakeName: "my_wrong_format"}
+	heroB, errMarshal := json.Marshal(hero)
+
+	assert.NilError(t, errMarshal)
+
+	res, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
+
+	assert.Equal(t, res.Code, http.StatusBadRequest)
 }
 
 func TestGetsHeroes(t *testing.T) {
@@ -111,6 +145,21 @@ func TestGetHero(t *testing.T) {
 	assert.Equal(t, createdHero.Equals(queriedHero), true)
 }
 
+func TestGetHeroInvalidID(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+	res, _ := test.DoRequest(server.ServerInstance, "GET", fmt.Sprintf("/hero/not_a_number"), nil)
+	assert.Equal(t, res.Code, http.StatusBadRequest)
+}
+
+func TestGetHeroNotFound(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	createdHero := &models.Hero{ID: 1, Name: "some hero"}
+
+	res, _ := test.DoRequest(server.ServerInstance, "GET", fmt.Sprintf("/hero/%v", createdHero.ID), nil)
+	assert.Equal(t, res.Code, http.StatusNotFound)
+}
+
 func TestDeleteHero(t *testing.T) {
 	defer server.ServerInstance.DB.C("heroes").DropCollection()
 
@@ -134,7 +183,54 @@ func TestDeleteHero(t *testing.T) {
 
 	assert.Equal(t, hero1.IsIn(heroes), false)
 	assert.Equal(t, hero2.IsIn(heroes), true)
+}
 
+func TestDeleteHeroInvalidID(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	var heroes []models.Hero
+	hero1 := &models.Hero{ID: 1, Name: "some hero"}
+	hero2 := &models.Hero{ID: 2, Name: "some other hero"}
+
+	errCreateHero1 := hero1.CreateHero()
+	assert.NilError(t, errCreateHero1)
+
+	errCreateHero2 := hero2.CreateHero()
+	assert.NilError(t, errCreateHero2)
+
+	res, _ := test.DoRequest(server.ServerInstance, "DELETE", fmt.Sprintf("/hero/invalid_id"), nil)
+	assert.Equal(t, res.Code, http.StatusBadRequest)
+
+	res, _ = test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+
+	json.NewDecoder(res.Body).Decode(&heroes)
+
+	assert.Equal(t, hero1.IsIn(heroes), true)
+	assert.Equal(t, hero2.IsIn(heroes), true)
+}
+
+func TestDeleteHeroNotFound(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	var heroes []models.Hero
+	hero1 := &models.Hero{ID: 1, Name: "some hero"}
+	hero2 := &models.Hero{ID: 2, Name: "some other hero"}
+
+	errCreateHero1 := hero1.CreateHero()
+	assert.NilError(t, errCreateHero1)
+
+	errCreateHero2 := hero2.CreateHero()
+	assert.NilError(t, errCreateHero2)
+
+	res, _ := test.DoRequest(server.ServerInstance, "DELETE", fmt.Sprintf("/hero/%v", hero1.ID+hero2.ID), nil)
+	assert.Equal(t, res.Code, http.StatusNotFound)
+
+	res, _ = test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+
+	json.NewDecoder(res.Body).Decode(&heroes)
+
+	assert.Equal(t, hero1.IsIn(heroes), true)
+	assert.Equal(t, hero2.IsIn(heroes), true)
 }
 
 func TestModifyHero(t *testing.T) {
@@ -157,5 +253,44 @@ func TestModifyHero(t *testing.T) {
 	assert.NilError(t, err)
 	assert.Equal(t, res.Code, http.StatusOK)
 	assert.Equal(t, hero.Equals(queriedHero), true)
+}
 
+func TestModifyHeroInvalidFormat(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	hero := &models.Hero{ID: 1, Name: "my_test_name"}
+
+	errHero := hero.CreateHero()
+	assert.NilError(t, errHero)
+
+	type WrongHero struct {
+		ID       int    `json:"id"`
+		FakeName string `json:"fakeName"`
+	}
+
+	wrongHero := &WrongHero{ID: 1, FakeName: "my_wrong_format"}
+	heroB, errMarshal := json.Marshal(wrongHero)
+
+	assert.NilError(t, errMarshal)
+
+	res, _ := test.DoRequest(server.ServerInstance, "PUT", "/hero", bytes.NewBuffer(heroB))
+	assert.Equal(t, res.Code, http.StatusBadRequest)
+}
+
+func TestModifyHeroNotFound(t *testing.T) {
+	defer server.ServerInstance.DB.C("heroes").DropCollection()
+
+	hero := &models.Hero{ID: 1, Name: "my_test_name"}
+
+	errHero := hero.CreateHero()
+	assert.NilError(t, errHero)
+
+	hero.Name = "changed name"
+	hero.ID += 1
+	b, errMarshal := json.Marshal(hero)
+
+	assert.NilError(t, errMarshal)
+
+	res, _ := test.DoRequest(server.ServerInstance, "PUT", "/hero", bytes.NewBuffer(b))
+	assert.Equal(t, res.Code, http.StatusNotFound)
 }
