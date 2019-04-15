@@ -7,7 +7,7 @@
 $ echo $GOPATH
 
 # if this outputs nothing, then set it to wherever you want
-$ export $GOPATH=/some/path
+$ export GOPATH=/some/path
 
 # create the directory for this project
 $ mkdir -p $GOPATH/src/github.com/sinfo
