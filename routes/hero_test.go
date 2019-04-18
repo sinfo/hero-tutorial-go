@@ -4,17 +4,31 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
-	"github.com/azbshiri/common/test"
 	"github.com/sinfo/go-tutorial/models"
 	"github.com/sinfo/go-tutorial/server"
 
 	"github.com/spf13/viper"
 	"gotest.tools/assert"
 )
+
+func executeRequest(method string, path string, payload io.Reader) (*httptest.ResponseRecorder, error) {
+	req, errReq := http.NewRequest(method, path, payload)
+
+	if errReq != nil {
+		return nil, errReq
+	}
+
+	rr := httptest.NewRecorder()
+	server.ServerInstance.ServeHTTP(rr, req)
+
+	return rr, nil
+}
 
 func TestMain(m *testing.M) {
 	viper.SetConfigName("config")
@@ -43,10 +57,10 @@ func TestAddHero(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, err := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(b))
+	res, err := executeRequest("POST", "/hero", bytes.NewBuffer(b))
 	assert.NilError(t, err)
-	assert.Equal(t, res.Code, http.StatusOK)
 
+	assert.Equal(t, res.Code, http.StatusOK)
 }
 
 func TestAddHeroDuplicate(t *testing.T) {
@@ -60,8 +74,8 @@ func TestAddHeroDuplicate(t *testing.T) {
 	assert.NilError(t, errMarshal1)
 	assert.NilError(t, errMarshal2)
 
-	res1, err1 := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
-	res2, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(duplicatedB))
+	res1, err1 := executeRequest("POST", "/hero", bytes.NewBuffer(heroB))
+	res2, _ := executeRequest("POST", "/hero", bytes.NewBuffer(duplicatedB))
 
 	assert.NilError(t, err1)
 	assert.Equal(t, res1.Code, http.StatusOK)
@@ -82,7 +96,7 @@ func TestAddHeroInvalidType(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
+	res, _ := executeRequest("POST", "/hero", bytes.NewBuffer(heroB))
 
 	assert.Equal(t, res.Code, http.StatusBadRequest)
 }
@@ -99,7 +113,7 @@ func TestAddHeroInvalidFormat(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, _ := test.DoRequest(server.ServerInstance, "POST", "/hero", bytes.NewBuffer(heroB))
+	res, _ := executeRequest("POST", "/hero", bytes.NewBuffer(heroB))
 
 	assert.Equal(t, res.Code, http.StatusBadRequest)
 }
@@ -117,7 +131,7 @@ func TestGetsHeroes(t *testing.T) {
 	errCreateHero2 := hero2.CreateHero()
 	assert.NilError(t, errCreateHero2)
 
-	res, err := test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+	res, err := executeRequest("GET", "/hero", nil)
 	assert.NilError(t, err)
 	assert.Equal(t, res.Code, http.StatusOK)
 
@@ -136,7 +150,7 @@ func TestGetHero(t *testing.T) {
 	errCreateHero := createdHero.CreateHero()
 	assert.NilError(t, errCreateHero)
 
-	res, err := test.DoRequest(server.ServerInstance, "GET", fmt.Sprintf("/hero/%v", createdHero.ID), nil)
+	res, err := executeRequest("GET", fmt.Sprintf("/hero/%v", createdHero.ID), nil)
 	assert.NilError(t, err)
 	assert.Equal(t, res.Code, http.StatusOK)
 
@@ -147,7 +161,7 @@ func TestGetHero(t *testing.T) {
 
 func TestGetHeroInvalidID(t *testing.T) {
 	defer server.ServerInstance.DB.C("heroes").DropCollection()
-	res, _ := test.DoRequest(server.ServerInstance, "GET", fmt.Sprintf("/hero/not_a_number"), nil)
+	res, _ := executeRequest("GET", fmt.Sprintf("/hero/not_a_number"), nil)
 	assert.Equal(t, res.Code, http.StatusBadRequest)
 }
 
@@ -156,7 +170,7 @@ func TestGetHeroNotFound(t *testing.T) {
 
 	createdHero := &models.Hero{ID: 1, Name: "some hero"}
 
-	res, _ := test.DoRequest(server.ServerInstance, "GET", fmt.Sprintf("/hero/%v", createdHero.ID), nil)
+	res, _ := executeRequest("GET", fmt.Sprintf("/hero/%v", createdHero.ID), nil)
 	assert.Equal(t, res.Code, http.StatusNotFound)
 }
 
@@ -173,11 +187,11 @@ func TestDeleteHero(t *testing.T) {
 	errCreateHero2 := hero2.CreateHero()
 	assert.NilError(t, errCreateHero2)
 
-	res, err := test.DoRequest(server.ServerInstance, "DELETE", fmt.Sprintf("/hero/%v", hero1.ID), nil)
+	res, err := executeRequest("DELETE", fmt.Sprintf("/hero/%v", hero1.ID), nil)
 	assert.NilError(t, err)
 	assert.Equal(t, res.Code, http.StatusOK)
 
-	res, err = test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+	res, err = executeRequest("GET", "/hero", nil)
 
 	json.NewDecoder(res.Body).Decode(&heroes)
 
@@ -198,10 +212,10 @@ func TestDeleteHeroInvalidID(t *testing.T) {
 	errCreateHero2 := hero2.CreateHero()
 	assert.NilError(t, errCreateHero2)
 
-	res, _ := test.DoRequest(server.ServerInstance, "DELETE", fmt.Sprintf("/hero/invalid_id"), nil)
+	res, _ := executeRequest("DELETE", fmt.Sprintf("/hero/invalid_id"), nil)
 	assert.Equal(t, res.Code, http.StatusBadRequest)
 
-	res, _ = test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+	res, _ = executeRequest("GET", "/hero", nil)
 
 	json.NewDecoder(res.Body).Decode(&heroes)
 
@@ -222,10 +236,10 @@ func TestDeleteHeroNotFound(t *testing.T) {
 	errCreateHero2 := hero2.CreateHero()
 	assert.NilError(t, errCreateHero2)
 
-	res, _ := test.DoRequest(server.ServerInstance, "DELETE", fmt.Sprintf("/hero/%v", hero1.ID+hero2.ID), nil)
+	res, _ := executeRequest("DELETE", fmt.Sprintf("/hero/%v", hero1.ID+hero2.ID), nil)
 	assert.Equal(t, res.Code, http.StatusNotFound)
 
-	res, _ = test.DoRequest(server.ServerInstance, "GET", "/hero", nil)
+	res, _ = executeRequest("GET", "/hero", nil)
 
 	json.NewDecoder(res.Body).Decode(&heroes)
 
@@ -247,7 +261,7 @@ func TestModifyHero(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, err := test.DoRequest(server.ServerInstance, "PUT", "/hero", bytes.NewBuffer(b))
+	res, err := executeRequest("PUT", "/hero", bytes.NewBuffer(b))
 	json.NewDecoder(res.Body).Decode(&queriedHero)
 
 	assert.NilError(t, err)
@@ -273,7 +287,7 @@ func TestModifyHeroInvalidFormat(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, _ := test.DoRequest(server.ServerInstance, "PUT", "/hero", bytes.NewBuffer(heroB))
+	res, _ := executeRequest("PUT", "/hero", bytes.NewBuffer(heroB))
 	assert.Equal(t, res.Code, http.StatusBadRequest)
 }
 
@@ -291,6 +305,6 @@ func TestModifyHeroNotFound(t *testing.T) {
 
 	assert.NilError(t, errMarshal)
 
-	res, _ := test.DoRequest(server.ServerInstance, "PUT", "/hero", bytes.NewBuffer(b))
+	res, _ := executeRequest("PUT", "/hero", bytes.NewBuffer(b))
 	assert.Equal(t, res.Code, http.StatusNotFound)
 }

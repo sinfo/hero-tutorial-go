@@ -1,14 +1,21 @@
-FROM golang:1.12.1
+FROM golang:alpine
 
-RUN apt-get update; apt-get install curl; apt-get install git
-RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.1/dep-linux-amd64 \
-      && chmod +x /usr/local/bin/dep
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-WORKDIR /go/src/github.com/sinfo/go-tutorial
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+WORKDIR $GOPATH
+
+RUN apk add git
+RUN apk add gcc
+RUN apk add libc-dev
+
+RUN mkdir -p "$GOPATH/src/github/sinfo/go-tutorial"
+WORKDIR $GOPATH/src/github.com/sinfo/go-tutorial/
 COPY . .
 
-RUN dep ensure -vendor-only
 RUN go get -d -v ./...
+RUN go get gotest.tools/assert
 RUN go install -v ./...
 
-CMD ["go-tutorial"]
+RUN go build -o main *.go
