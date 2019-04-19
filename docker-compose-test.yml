@@ -1,7 +1,6 @@
 version: '3.3'
 services:
     sut:
-        container_name: 'go-tutorial-test'
         depends_on:
             - 'db'
         build:
