@@ -1,7 +1,14 @@
 #!/bin/sh
 
-echo DB URL $GO_TUTORIAL_DB_URL
-sleep 5
+# Start the first process
+mongod --dbpath=./data &
+status=$?
+if [ $status -ne 0 ]; then
+  echo "Failed to start mongodb: $status"
+  exit $status
+fi
+
+sleep 1
 
 if ./routes.test; then
   echo "Tests passed!"
