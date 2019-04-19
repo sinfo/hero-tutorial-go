@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+    su:
+        container_name: 'go-tutorial-test'
+        build: '.'
+        ports:
+            - '8000:8000'
+        environment:
+            - 'GO_TUTORIAL_DB_URL=mongodb://host.docker.internal:27017'
+            - 'GO_TUTORIAL_DB_NAME=gotutorialtest'
+        command:
+            - './run_tests.sh'

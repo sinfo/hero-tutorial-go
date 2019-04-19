@@ -32,7 +32,7 @@ func executeRequest(method string, path string, payload io.Reader) (*httptest.Re
 
 func TestMain(m *testing.M) {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("..")
+	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s", err))
