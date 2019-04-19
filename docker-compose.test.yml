@@ -6,7 +6,7 @@ services:
             - 'db'
         build:
             context: '.'
-            dockerfile: Dockerfile.test
+            dockerfile: Dockerfile_test
         ports:
             - '8000:8000'
         environment:
