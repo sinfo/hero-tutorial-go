@@ -3,4 +3,5 @@ vendor
 *.code-workspace
 go-tutorial
 main
+*.test
 .vscode

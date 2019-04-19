@@ -2,21 +2,19 @@ version: '3.3'
 services:
     sut:
         container_name: 'go-tutorial-test'
-        build: '.'
+        depends_on:
+            - 'db'
+        build:
+            context: '.'
+            dockerfile: Dockerfile.test
         ports:
             - '8000:8000'
         environment:
-            - 'GO_TUTORIAL_DB_URL=mongodb://host.docker.internal:27017'
-            - 'GO_TUTORIAL_DB_NAME=gotutorialtest'
-        depends_on:
-            - mongo
+            - 'GO_TUTORIAL_DB_TEST_URL=mongodb://host.docker.internal:27017'
+            - 'GO_TUTORIAL_DB_TEST_NAME=gotutorialtest'
         command:
             - './run_tests.sh'
-    mongo:
+    db:
         image: mongo
         ports:
-            - "27017:27017"
-        volumes:
-            - data-volume:/data/db
-volumes:
-    data-volume:
+            - 27017:27017
