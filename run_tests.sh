@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Start the first process
-mongod --dbpath=./data &
+mongod --dbpath=./data > /dev/null &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start mongodb: $status"

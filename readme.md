@@ -20,12 +20,16 @@ $ git clone git@github.com:sinfo/hero-tutorial-go.git
 ```
 
 ### build and run
+
+**Note:** don't forget to spin up a mongodb instance
+
 ```
 # build
 $ go build -o main *.go
 
 # test
-$ go test ./...
+$ go -c test ./routes
+$ ./routes.test
 
 # run
 $ ./main
@@ -41,8 +45,9 @@ $ revive -exclude vendor/... -formatter friendly ./...
 ### docker
 
 ```
-# build and run
-$ docker-compose up --build
+# build and test
+$ docker-compose -f docker-compose-test.yml -p ci build
+$ docker-compose -f docker-compose-test.yml -p ci up --abort-on-container-exit
 ```
 
 ### dependencies
