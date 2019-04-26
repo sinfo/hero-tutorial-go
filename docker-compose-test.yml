@@ -9,5 +9,3 @@ services:
         environment:
             - 'GO_TUTORIAL_DB_TEST_URL=mongodb://localhost:27017'
             - 'GO_TUTORIAL_DB_TEST_NAME=gotutorialtest'
-        command:
-            - './run_tests.sh'

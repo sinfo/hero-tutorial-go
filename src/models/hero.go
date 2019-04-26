@@ -10,8 +10,18 @@ import (
 )
 
 // Hero represents a hero to be stored in the database and parsed from http requests
+// swagger:model
 type Hero struct {
-	ID   int    `json:"id" bson:"_id"`
+
+	// the id for this user
+	//
+	// required: true
+	// min: 0
+	ID int `json:"id" bson:"_id"`
+
+	// the name for this user
+	// required: true
+	// min length: 1
 	Name string `json:"name" bson:"name"`
 }
 

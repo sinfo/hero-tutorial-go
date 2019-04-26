@@ -13,16 +13,9 @@ RUN mkdir -p "$GOPATH/src/github/sinfo/go-tutorial"
 WORKDIR $GOPATH/src/github.com/sinfo/go-tutorial/
 COPY . .
 
-RUN go get -d -v ./...
-RUN go get gotest.tools/assert
-RUN go get -u github.com/mgechev/revive
-RUN go install -v ./...
-
-RUN go build -o main *.go
-
-RUN go test -c ./routes
-RUN chmod +x ./routes.test
-RUN chmod +x ./run_tests.sh
+RUN make clean
+RUN make deps
+RUN make build
 
 RUN apt-get install -y mongodb
-RUN mkdir data
+CMD ["make", "test"]

@@ -8,5 +8,3 @@ services:
         environment:
             - 'GO_TUTORIAL_DB_URL=mongodb://host.docker.internal:27017'
             - 'GO_TUTORIAL_DB_NAME=gotutorial'
-        command:
-            - './main'

@@ -5,3 +5,5 @@ go-tutorial
 main
 *.test
 .vscode
+bin
+swagger.yml

@@ -11,6 +11,19 @@ import (
 )
 
 // GetHeroes is the handler that gets all the heroes from the database
+// swagger:route GET /hero heroes getHeroes
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+//     Schemes: http, https
+//
+//     Responses:
+//       200: Hero
+//       422
 func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	heroes, err := models.GetHeroes()
 
@@ -21,7 +34,6 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(heroes)
 }
 
-// AddHero is the handler that adds a hero to the database
 func AddHero(w http.ResponseWriter, r *http.Request) {
 	var hero *models.Hero
 	var err error

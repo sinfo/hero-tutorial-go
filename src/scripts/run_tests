@@ -1,0 +1,36 @@
+#!/bin/sh
+
+mkdir -p data
+
+echo ""
+echo "********************\n"
+echo "   Tests script"
+echo "\n********************"
+echo ""
+printf "Running database instance... "
+mongod --dbpath=./data &>/dev/null &
+
+status=$?
+if [ $status -ne 0 ]; then
+  echo "Failed"
+  exit $status
+fi
+echo "Done"
+
+echo "\nTests"
+for entry in `ls bin | grep .test`
+  do
+    testfile="bin/$entry"
+    printf "  [$testfile] "
+
+    if ! $testfile; then
+      echo "Failed"
+      exit 1
+    fi
+done
+
+echo "\nRunning linter..."
+
+golint $(go list ./...)
+
+exit 0
