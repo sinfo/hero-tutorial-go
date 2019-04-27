@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/globalsign/mgo"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
 	"github.com/sinfo/hero-tutorial-go/src/models"
@@ -12,7 +13,7 @@ import (
 
 // Server representes the server, and stores its router and database instance
 type Server struct {
-	Mux *mux.Router
+	Mux http.Handler
 	DB  *mgo.Database
 }
 
@@ -28,13 +29,17 @@ func InitServer(dbURL string, dbName string) {
 	db := models.InitDB(dbURL, dbName)
 	mux := mux.NewRouter()
 
-	ServerInstance = &Server{mux, db}
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
-	ServerInstance.Mux.HandleFunc("/hero", routes.GetHeroes).Methods("GET")
-	ServerInstance.Mux.HandleFunc("/hero", routes.AddHero).Methods("POST")
-	ServerInstance.Mux.HandleFunc("/hero", routes.ModifyHero).Methods("PUT")
-	ServerInstance.Mux.HandleFunc("/hero/{id}", routes.GetHero).Methods("GET")
-	ServerInstance.Mux.HandleFunc("/hero/{id}", routes.DeleteHero).Methods("DELETE")
+	mux.HandleFunc("/hero", routes.GetHeroes).Methods("GET")
+	mux.HandleFunc("/hero", routes.AddHero).Methods("POST")
+	mux.HandleFunc("/hero", routes.ModifyHero).Methods("PUT")
+	mux.HandleFunc("/hero/{id}", routes.GetHero).Methods("GET")
+	mux.HandleFunc("/hero/{id}", routes.DeleteHero).Methods("DELETE")
 
-	ServerInstance.Mux.HandleFunc("/swagger", routes.GetSwagger).Methods("GET")
+	mux.HandleFunc("/swagger", routes.GetSwagger).Methods("GET")
+
+	ServerInstance = &Server{handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(mux), db}
 }

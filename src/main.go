@@ -11,19 +11,15 @@
 // there are no TOS at this moment, use at your own risk we take no responsibility
 //
 //     Schemes: http, https
-//     Host: localhost
-//     BasePath: /v2
+//     Host: localhost:8000
+//     BasePath: /
 //     Version: 0.0.1
-//     License: MIT http://opensource.org/licenses/MIT
-//     Contact: John Doe<john.doe@example.com> http://john.doe.com
 //
 //     Consumes:
 //     - application/json
-//     - application/xml
 //
 //     Produces:
 //     - application/json
-//     - application/xml
 //
 // swagger:meta
 // go:generate swagger generate spec

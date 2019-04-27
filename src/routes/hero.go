@@ -11,10 +11,13 @@ import (
 )
 
 // GetHeroes is the handler that gets all the heroes from the database
-// swagger:route GET /hero heroes getHeroes
+// swagger:route GET /hero heroes GetHeroes
+//
+// Returns all heroes
 //
 //     Consumes:
 //     - application/json
+//     - application/x-protobuf
 //
 //     Produces:
 //     - application/json
@@ -22,9 +25,28 @@ import (
 //     Schemes: http, https
 //
 //     Responses:
-//       200: Hero
-//       422
+//       200:
+//         description: Gets all heroes
+//         schema:
+//           type: array
+//           items:
+//             "$ref": "#/definitions/Hero"
 func GetHeroes(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation GET /hero GetHeroes
+	//
+	// Returns all heroes
+	//
+	// ---
+	// produces:
+	// - application/json
+	// responses:
+	//   '200':
+	//     description: Gets all heroes
+	//     schema:
+	//       type: array
+	//       items:
+	//         "$ref": "#/definitions/Hero"
+
 	heroes, err := models.GetHeroes()
 
 	if err != nil {
@@ -36,6 +58,25 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 
 // AddHero is the handler that adds a hero
 func AddHero(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation POST /hero AddHero
+	//
+	// Returns the created hero
+	//
+	// ---
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: hero
+	//   in: body
+	//   description: Hero body
+	//   required: true
+	//   schema:
+	//     "$ref": "#/definitions/Hero"
+	// responses:
+	//   '200':
+	//    description: Created hero
+	//    schema:
+	//      "$ref": "#/definitions/Hero"
 	var hero *models.Hero
 	var err error
 
