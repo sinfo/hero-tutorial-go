@@ -5,8 +5,9 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/gorilla/mux"
-	"github.com/sinfo/go-tutorial/models"
-	"github.com/sinfo/go-tutorial/routes"
+
+	"github.com/sinfo/hero-tutorial-go/src/models"
+	"github.com/sinfo/hero-tutorial-go/src/routes"
 )
 
 // Server representes the server, and stores its router and database instance

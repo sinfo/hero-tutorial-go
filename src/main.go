@@ -34,7 +34,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sinfo/go-tutorial/server"
+	"github.com/sinfo/hero-tutorial-go/src/server"
 	"github.com/spf13/viper"
 )
 

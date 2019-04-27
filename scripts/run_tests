@@ -8,7 +8,7 @@ echo "   Tests script"
 echo "\n********************"
 echo ""
 printf "Running database instance... "
-mongod --dbpath=./data &>/dev/null &
+mongod --dbpath=$(pwd)/data &>/dev/null &
 
 status=$?
 if [ $status -ne 0 ]; then

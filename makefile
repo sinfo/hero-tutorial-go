@@ -2,22 +2,23 @@ BINDIR=./bin
 SRCDIR=./src
 BINARY_FILENAME=main
 
-all: test build
+all: build test
 
-build: *.go
+build: swagger.yml src/*
 	mkdir -p $(BINDIR)
-	go build -o $(BINDIR)/$(BINARY) $(SRCDIR)/*.go
-	go test -c ./routes -o $(BINDIR)/routes.test
-	go test -c ./models -o $(BINDIR)/models.test
-	go test -c ./server -o $(BINDIR)/server.test
-	swagger generate spec -m -o swagger.yml
+	go build -o $(BINDIR)/$(BINARY_FILENAME) $(SRCDIR)/*.go
+	go test -c $(SRCDIR)/routes -o $(BINDIR)/routes.test
+	go test -c $(SRCDIR)/models -o $(BINDIR)/models.test
+	go test -c $(SRCDIR)/server -o $(BINDIR)/server.test
+	swagger generate spec -m -o swagger.yml -b ./src
 
 test: build
 	swagger validate ./swagger.yml
 	chmod +x ./scripts/run_tests
 	./scripts/run_tests
+
 run: build
-	./$(BINDIR)/$(BINARY)
+	$(BINDIR)/$(BINARY_FILENAME)
 
 deps:
 	go get -d -v ./...

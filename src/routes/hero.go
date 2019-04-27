@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/sinfo/go-tutorial/models"
+	"github.com/sinfo/hero-tutorial-go/src/models"
 
 	"github.com/gorilla/mux"
 )
