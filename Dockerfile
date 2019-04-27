@@ -9,13 +9,12 @@ WORKDIR $GOPATH
 RUN apt-get update
 RUN apt-get install git gcc
 
-RUN mkdir -p "$GOPATH/src/github/sinfo/go-tutorial"
-WORKDIR $GOPATH/src/github.com/sinfo/go-tutorial/
+RUN mkdir -p "$GOPATH/src/github/sinfo/hero-tutorial-go"
+WORKDIR $GOPATH/src/github.com/sinfo/hero-tutorial-go/
 COPY . .
 
 RUN make clean
 RUN make deps
 RUN make build
 
-RUN apt-get install -y mongodb
 CMD ["make", "run"]

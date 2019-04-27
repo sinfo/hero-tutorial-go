@@ -34,6 +34,7 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(heroes)
 }
 
+// AddHero is the handler that adds a hero
 func AddHero(w http.ResponseWriter, r *http.Request) {
 	var hero *models.Hero
 	var err error

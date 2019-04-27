@@ -1,15 +1,5 @@
 #!/bin/sh
 
-mkdir -p data
-
-echo ""
-echo "********************\n"
-echo "   Tests script"
-echo "\n********************"
-echo ""
-printf "Running database instance... "
-mongod --dbpath=$(pwd)/data &>/dev/null &
-
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed"

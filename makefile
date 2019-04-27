@@ -4,16 +4,16 @@ BINARY_FILENAME=main
 
 all: build test
 
-build: swagger.yml src/*
+build: src/*
 	mkdir -p $(BINDIR)
 	go build -o $(BINDIR)/$(BINARY_FILENAME) $(SRCDIR)/*.go
 	go test -c $(SRCDIR)/routes -o $(BINDIR)/routes.test
 	go test -c $(SRCDIR)/models -o $(BINDIR)/models.test
 	go test -c $(SRCDIR)/server -o $(BINDIR)/server.test
-	swagger generate spec -m -o swagger.yml -b ./src
+	swagger generate spec -m -o swagger.yaml -b ./src
 
 test: build
-	swagger validate ./swagger.yml
+	swagger validate ./swagger.yaml
 	chmod +x ./scripts/run_tests
 	./scripts/run_tests
 
@@ -36,4 +36,4 @@ docker-test:
 
 clean:
 	go clean
-	rm -rf data ./$(BINDIR) swagger.yml
+	rm -rf data $(BINDIR) swagger.yaml

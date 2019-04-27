@@ -36,4 +36,5 @@ func InitServer(dbURL string, dbName string) {
 	ServerInstance.Mux.HandleFunc("/hero/{id}", routes.GetHero).Methods("GET")
 	ServerInstance.Mux.HandleFunc("/hero/{id}", routes.DeleteHero).Methods("DELETE")
 
+	ServerInstance.Mux.HandleFunc("/swagger", routes.GetSwagger).Methods("GET")
 }
