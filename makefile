@@ -43,8 +43,8 @@ docker-build: docker-deps
 	go build -o $(BINDIR)/$(BINARY_FILENAME) $(SRCDIR)/*.go
 
 docker-test:
-	docker-compose -f docker-compose-test.yml -p ci build
-	docker-compose -f docker-compose-test.yml -p ci up --abort-on-container-exit
+	docker-compose -f docker-compose.test.yml -p ci build
+	docker-compose -f docker-compose.test.yml -p ci up --abort-on-container-exit
 
 clean:
 	go clean
