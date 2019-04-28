@@ -17,6 +17,9 @@ $ cd $GOPATH/src/github/sinfo
 
 # clone this repository
 $ git clone git@github.com:sinfo/hero-tutorial-go.git
+
+# install dependencies
+$ make deps
 ```
 
 ### build and run
@@ -24,34 +27,16 @@ $ git clone git@github.com:sinfo/hero-tutorial-go.git
 **Note:** don't forget to spin up a mongodb instance
 
 ```
-# build
-$ go build -o main *.go
-
-# test
-$ go -c test ./routes
-$ ./routes.test
-
 # run
-$ ./main
-```
-
-### development
-
-#### lint ([revive](https://github.com/mgechev/revive))
-```
-$ revive -exclude vendor/... -formatter friendly ./...
+$ make run
 ```
 
 ### docker
 
 ```
-# build and test
-$ docker-compose -f docker-compose-test.yml -p ci build
-$ docker-compose -f docker-compose-test.yml -p ci up --abort-on-container-exit
+# test
+$ make docker-test
+
+# run
+$ make docker-run
 ```
-
-### dependencies
-
-- [gorilla/mux](https://github.com/gorilla/mux)
-- [dep](https://github.com/golang/dep)
-- [mgo](https://godoc.org/github.com/globalsign/mgo)
