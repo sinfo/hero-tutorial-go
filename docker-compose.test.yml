@@ -3,7 +3,7 @@ services:
     sut:
         build:
             context: '.'
-            dockerfile: ./Dockerfile.test
+            dockerfile: ./Dockerfile_test
         environment:
             - 'GO_TUTORIAL_DB_TEST_URL=mongodb://db:27017'
             - 'GO_TUTORIAL_DB_TEST_NAME=gotutorialtest'
