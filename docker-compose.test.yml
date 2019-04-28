@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+    sut:
+        build:
+            context: '.'
+            dockerfile: ./Dockerfile_test
+        environment:
+            - 'GO_TUTORIAL_DB_TEST_URL=mongodb://db:27017'
+            - 'GO_TUTORIAL_DB_TEST_NAME=gotutorialtest'
+        links:
+            - mongodb:db
+        depends_on:
+            - mongodb
+
+    mongodb:
+        image: mongo:latest
+        container_name: "mongodb"
+        command: mongod --smallfiles --logpath=/dev/null

@@ -9,20 +9,10 @@ WORKDIR $GOPATH
 RUN apt-get update
 RUN apt-get install git gcc
 
-RUN mkdir -p "$GOPATH/src/github/sinfo/go-tutorial"
-WORKDIR $GOPATH/src/github.com/sinfo/go-tutorial/
+RUN mkdir -p "$GOPATH/src/github/sinfo/hero-tutorial-go"
+WORKDIR $GOPATH/src/github.com/sinfo/hero-tutorial-go/
 COPY . .
 
-RUN go get -d -v ./...
-RUN go get gotest.tools/assert
-RUN go get -u github.com/mgechev/revive
-RUN go install -v ./...
+RUN make deps
 
-RUN go build -o main *.go
-
-RUN go test -c ./routes
-RUN chmod +x ./routes.test
-RUN chmod +x ./run_tests.sh
-
-RUN apt-get install -y mongodb
-RUN mkdir data
+CMD ["make", "test"]

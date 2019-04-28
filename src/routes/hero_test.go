@@ -10,8 +10,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/sinfo/go-tutorial/models"
-	"github.com/sinfo/go-tutorial/server"
+	"github.com/sinfo/hero-tutorial-go/src/models"
+	"github.com/sinfo/hero-tutorial-go/src/server"
 
 	"github.com/spf13/viper"
 	"gotest.tools/assert"
