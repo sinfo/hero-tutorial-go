@@ -13,8 +13,6 @@ RUN mkdir -p "$GOPATH/src/github/sinfo/hero-tutorial-go"
 WORKDIR $GOPATH/src/github.com/sinfo/hero-tutorial-go/
 COPY . .
 
-RUN make clean
 RUN make deps
-RUN make build
 
-CMD ["make", "run"]
+CMD ["make", "test"]

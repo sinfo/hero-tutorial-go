@@ -21,6 +21,7 @@ type Server struct {
 var ServerInstance *Server
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
 	s.Mux.ServeHTTP(w, r)
 }
 
@@ -31,15 +32,72 @@ func InitServer(dbURL string, dbName string) {
 
 	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With"})
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
-	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 
+	// swagger:route GET /hero heroes GetHeroes
+	//
+	// Returns all heroes
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
 	mux.HandleFunc("/hero", routes.GetHeroes).Methods("GET")
-	mux.HandleFunc("/hero", routes.AddHero).Methods("POST")
-	mux.HandleFunc("/hero", routes.ModifyHero).Methods("PUT")
-	mux.HandleFunc("/hero/{id}", routes.GetHero).Methods("GET")
-	mux.HandleFunc("/hero/{id}", routes.DeleteHero).Methods("DELETE")
 
-	mux.HandleFunc("/swagger", routes.GetSwagger).Methods("GET")
+	// swagger:route POST /hero heroes AddHero
+	//
+	// Returns new hero
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	mux.HandleFunc("/hero", routes.AddHero).Methods("POST")
+
+	// swagger:route PUT /hero heroes ModifyHero
+	//
+	// Returns modified hero
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	mux.HandleFunc("/hero", routes.ModifyHero).Methods("PUT")
+
+	// swagger:route GET /hero/{id} heroes GetHero
+	//
+	// Returns a specific hero
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	mux.HandleFunc("/hero/{id}", routes.GetHero).Methods("GET")
+
+	// swagger:route DELETE /hero/{id} heroes DeleteHero
+	//
+	// Returns the deleted hero
+	//
+	//     Consumes:
+	//     - application/json
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http, https
+	mux.HandleFunc("/hero/{id}", routes.DeleteHero).Methods("DELETE")
 
 	ServerInstance = &Server{handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(mux), db}
 }

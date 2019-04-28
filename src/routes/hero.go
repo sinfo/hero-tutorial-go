@@ -11,28 +11,8 @@ import (
 )
 
 // GetHeroes is the handler that gets all the heroes from the database
-// swagger:route GET /hero heroes GetHeroes
-//
-// Returns all heroes
-//
-//     Consumes:
-//     - application/json
-//     - application/x-protobuf
-//
-//     Produces:
-//     - application/json
-//
-//     Schemes: http, https
-//
-//     Responses:
-//       200:
-//         description: Gets all heroes
-//         schema:
-//           type: array
-//           items:
-//             "$ref": "#/definitions/Hero"
 func GetHeroes(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation GET /hero GetHeroes
+	// swagger:operation GET /hero heroes GetHeroes
 	//
 	// Returns all heroes
 	//
@@ -58,7 +38,7 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 
 // AddHero is the handler that adds a hero
 func AddHero(w http.ResponseWriter, r *http.Request) {
-	// swagger:operation POST /hero AddHero
+	// swagger:operation POST /hero heroes AddHero
 	//
 	// Returns the created hero
 	//
@@ -77,6 +57,7 @@ func AddHero(w http.ResponseWriter, r *http.Request) {
 	//    description: Created hero
 	//    schema:
 	//      "$ref": "#/definitions/Hero"
+
 	var hero *models.Hero
 	var err error
 
@@ -97,6 +78,25 @@ func AddHero(w http.ResponseWriter, r *http.Request) {
 
 // GetHero is the handler that gets a specific hero from the database
 func GetHero(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation GET /hero/{id} heroes GetHero
+	//
+	// Returns a specific hero
+	//
+	// ---
+	// produces:
+	// - application/json
+	// parameters:
+	// - in: path
+	//   name: id
+	//   description: id of hero
+	//   required: true
+	//   type: integer
+	// responses:
+	//   '200':
+	//     description: Gets a specific hero
+	//     schema:
+	//       "$ref": "#/definitions/Hero"
+
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 
@@ -122,6 +122,26 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 
 // ModifyHero is the handler that renames a hero from the database
 func ModifyHero(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation PUT /hero heroes ModifyHero
+	//
+	// Returns the modified hero
+	//
+	// ---
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: hero
+	//   in: body
+	//   description: Hero body
+	//   required: true
+	//   schema:
+	//     "$ref": "#/definitions/Hero"
+	// responses:
+	//   '200':
+	//    description: Modified hero
+	//    schema:
+	//      "$ref": "#/definitions/Hero"
+
 	var hero *models.Hero
 	var err error
 
@@ -147,6 +167,25 @@ func ModifyHero(w http.ResponseWriter, r *http.Request) {
 
 // DeleteHero is the handler that removes a hero from the database
 func DeleteHero(w http.ResponseWriter, r *http.Request) {
+	// swagger:operation DELETE /hero/{id} heroes DeleteHero
+	//
+	// Deletes a hero
+	//
+	// ---
+	// produces:
+	// - application/json
+	// parameters:
+	// - in: path
+	//   name: id
+	//   description: id of hero
+	//   required: true
+	//   type: integer
+	// responses:
+	//   '200':
+	//     description: Returns the deleted hero
+	//     schema:
+	//       "$ref": "#/definitions/Hero"
+
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
 

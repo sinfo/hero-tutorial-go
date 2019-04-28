@@ -13,12 +13,6 @@ RUN mkdir -p "$GOPATH/src/github/sinfo/hero-tutorial-go"
 WORKDIR $GOPATH/src/github.com/sinfo/hero-tutorial-go/
 COPY . .
 
-RUN make clean
-RUN make deps
-RUN make build
+RUN make docker-build
 
-#RUN apt-get install -y mongodb
-#RUN mongod --dbpath=$(pwd)/data &>/dev/null &
-#RUN service mongod start
-
-CMD ["make", "test"]
+CMD ["make", "docker-run"]

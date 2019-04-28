@@ -1,10 +1,33 @@
 version: '3.3'
 services:
     api:
+        build: 
+            context: '.'
+            dockerfile: './docker/api/Dockerfile'
         container_name: 'go-tutorial'
-        build: '.'
-        ports:
-            - '8000:8000'
         environment:
             - 'GO_TUTORIAL_DB_URL=mongodb://host.docker.internal:27017'
             - 'GO_TUTORIAL_DB_NAME=gotutorial'
+    
+    swaggerui:
+        image: swaggerapi/swagger-ui
+        environment:
+            - 'SWAGGER_JSON=/var/www/swagger.json'
+            - 'BASE_URL=/'
+        volumes:
+            - .:/var/www/
+        links:
+            - api
+        depends_on:
+            - 'api'
+
+    nginx:
+        build: './docker/nginx'
+        ports:
+            - '80:80'
+        links:
+            - api
+            - swaggerui
+        depends_on:
+            - 'api'
+            - 'swaggerui'

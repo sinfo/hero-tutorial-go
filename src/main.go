@@ -11,7 +11,7 @@
 // there are no TOS at this moment, use at your own risk we take no responsibility
 //
 //     Schemes: http, https
-//     Host: localhost:8000
+//     Host: localhost
 //     BasePath: /
 //     Version: 0.0.1
 //
