@@ -13,7 +13,6 @@ services:
         image: swaggerapi/swagger-ui
         environment:
             - 'SWAGGER_JSON=/var/www/swagger.json'
-            - 'BASE_URL=/'
         volumes:
             - .:/var/www/
         links:

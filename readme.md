@@ -1,4 +1,4 @@
-## go
+## hero-tutorial-go
 
 ### setup
 
@@ -28,6 +28,8 @@ $ make deps
 
 ```
 # run
+# this required an instance of mongodb running
+# http://localhost:8080 => api
 $ make run
 ```
 
@@ -38,5 +40,9 @@ $ make run
 $ make docker-test
 
 # run
-$ make docker-run
+# this required an instance of mongodb running
+# http://localhost => api
+# http://localhost/documentation => swagger documentation
+
+$ make docker
 ```
