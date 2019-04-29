@@ -1,6 +1,4 @@
-## hero-tutorial-go
-
-### setup
+## setup
 
 ```
 # check if you have the env var GOPATH set
@@ -22,27 +20,34 @@ $ git clone git@github.com:sinfo/hero-tutorial-go.git
 $ make deps
 ```
 
-### build and run
+## build and run
 
-**Note:** don't forget to spin up a mongodb instance
+This required an instance of MongoDB running.
+
+Access this on `http://localhost:8080`
 
 ```
-# run
-# this required an instance of mongodb running
-# http://localhost:8080 => api
 $ make run
 ```
 
-### docker
+## docker
+
+This requires docker to be installed and running.
+
+### test
+
+This is what will be run on the dockerhub.
 
 ```
-# test
 $ make docker-test
+```
 
-# run
-# this required an instance of mongodb running
-# http://localhost => api
-# http://localhost/documentation => swagger documentation
+### run
 
+This required an instance of MongoDB running.
+
+Access this on `http://localhost` (`http://localhost/documentation/` for the swagger documentation)
+
+```
 $ make docker
 ```
