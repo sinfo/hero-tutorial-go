@@ -1,3 +1,5 @@
+# Hero REST API in Golang
+
 ## setup
 
 ```
