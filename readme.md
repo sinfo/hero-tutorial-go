@@ -1,6 +1,6 @@
 # Hero REST API in Golang
 
-## setup
+## Setup
 
 ```
 # check if you have the env var GOPATH set
@@ -22,7 +22,7 @@ $ git clone git@github.com:sinfo/hero-tutorial-go.git
 $ make deps
 ```
 
-## build and run
+## Build and run
 
 This required an instance of MongoDB running.
 
@@ -32,11 +32,11 @@ Access this on `http://localhost:8080`
 $ make run
 ```
 
-## docker
+## Docker
 
 This requires docker to be installed and running.
 
-### test
+### Test
 
 This is what will be run on the dockerhub.
 
@@ -44,7 +44,7 @@ This is what will be run on the dockerhub.
 $ make docker-test
 ```
 
-### run
+### Run
 
 This required an instance of MongoDB running.
 
