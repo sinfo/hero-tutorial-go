@@ -29,9 +29,15 @@ func InitServer(dbURL string, dbName string) {
 	db := models.InitDB(dbURL, dbName)
 	mux := mux.NewRouter()
 
-	staticFilesHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))
+	staticFilesHandler := http.StripPrefix("/swaggerui/", http.FileServer(http.Dir("./swaggerui/")))
+	mux.PathPrefix("/swaggerui/").Handler(staticFilesHandler)
 
-	mux.PathPrefix("/static/").Handler(staticFilesHandler)
+	healthCheck := func(w http.ResponseWriter, req *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	}
+
+	mux.HandleFunc("/health", healthCheck)
 
 	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
