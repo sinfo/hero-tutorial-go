@@ -21,7 +21,6 @@ type Server struct {
 var ServerInstance *Server
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
 	s.Mux.ServeHTTP(w, r)
 }
 
@@ -30,7 +29,11 @@ func InitServer(dbURL string, dbName string) {
 	db := models.InitDB(dbURL, dbName)
 	mux := mux.NewRouter()
 
-	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	staticFilesHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))
+
+	mux.PathPrefix("/static/").Handler(staticFilesHandler)
+
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 

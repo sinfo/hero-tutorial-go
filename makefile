@@ -11,10 +11,10 @@ build: src/*
 	go test -c $(SRCDIR)/routes -o $(BINDIR)/routes.test
 	go test -c $(SRCDIR)/models -o $(BINDIR)/models.test
 	go test -c $(SRCDIR)/server -o $(BINDIR)/server.test
-	swagger generate spec -m -o ./swagger.json -b ./src
+	swagger generate spec -m -o ./static/swagger.json -b ./src
 
 test: build
-	swagger validate ./swagger.json
+	swagger validate ./static/swagger.json
 	chmod +x ./scripts/run_tests
 	./scripts/run_tests
 
@@ -48,4 +48,4 @@ docker-test:
 
 clean:
 	go clean
-	rm -rf data $(BINDIR) ./swagger.json
+	rm -rf data $(BINDIR) ./static/swagger.json

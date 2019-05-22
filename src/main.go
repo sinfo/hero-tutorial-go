@@ -49,6 +49,6 @@ func main() {
 
 	server.InitServer(dbURL, dbName)
 
-	log.Printf("Running on port %v", viper.Get("port"))
-	log.Fatal(http.ListenAndServe(":8000", server.ServerInstance))
+	log.Printf("Running on %s:%v", viper.Get("HOST"), viper.Get("PORT"))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%v", viper.Get("HOST"), viper.Get("PORT")), server.ServerInstance))
 }

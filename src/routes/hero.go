@@ -27,6 +27,8 @@ func GetHeroes(w http.ResponseWriter, r *http.Request) {
 	//       items:
 	//         "$ref": "#/definitions/Hero"
 
+	w.Header().Add("Content-Type", "application/json")
+
 	heroes, err := models.GetHeroes()
 
 	if err != nil {
@@ -57,6 +59,8 @@ func AddHero(w http.ResponseWriter, r *http.Request) {
 	//    description: Created hero
 	//    schema:
 	//      "$ref": "#/definitions/Hero"
+
+	w.Header().Add("Content-Type", "application/json")
 
 	var hero *models.Hero
 	var err error
@@ -96,6 +100,8 @@ func GetHero(w http.ResponseWriter, r *http.Request) {
 	//     description: Gets a specific hero
 	//     schema:
 	//       "$ref": "#/definitions/Hero"
+
+	w.Header().Add("Content-Type", "application/json")
 
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
@@ -142,6 +148,8 @@ func ModifyHero(w http.ResponseWriter, r *http.Request) {
 	//    schema:
 	//      "$ref": "#/definitions/Hero"
 
+	w.Header().Add("Content-Type", "application/json")
+
 	var hero *models.Hero
 	var err error
 
@@ -185,6 +193,8 @@ func DeleteHero(w http.ResponseWriter, r *http.Request) {
 	//     description: Returns the deleted hero
 	//     schema:
 	//       "$ref": "#/definitions/Hero"
+
+	w.Header().Add("Content-Type", "application/json")
 
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])

@@ -8,13 +8,14 @@ services:
         environment:
             - 'GO_TUTORIAL_DB_URL=mongodb://host.docker.internal:27017'
             - 'GO_TUTORIAL_DB_NAME=gotutorial'
+            - 'GO_TUTORIAL_HOST=0.0.0.0'
     
     swaggerui:
         image: swaggerapi/swagger-ui
         environment:
             - 'SWAGGER_JSON=/var/www/swagger.json'
         volumes:
-            - .:/var/www/
+            - ./static/:/var/www/
         links:
             - api
         depends_on:
@@ -23,9 +24,9 @@ services:
     nginx:
         image: nginx:latest
         volumes:
-            - ./nginx.conf:/etc/nginx/nginx.conf
+            - ./:/etc/nginx/
         ports:
-            - '80:80'
+            - '8000:80'
         links:
             - api
             - swaggerui
