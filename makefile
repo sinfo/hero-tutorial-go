@@ -11,7 +11,7 @@ build: src/*
 	go test -c $(SRCDIR)/routes -o $(BINDIR)/routes.test
 	go test -c $(SRCDIR)/models -o $(BINDIR)/models.test
 	go test -c $(SRCDIR)/server -o $(BINDIR)/server.test
-	swagger generate spec -m -o ./static/swagger.json -b ./src
+	mkdir -p static && swagger generate spec -m -o ./static/swagger.json -b ./src
 
 test: build
 	swagger validate ./static/swagger.json
